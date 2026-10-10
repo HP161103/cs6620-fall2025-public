@@ -7,6 +7,9 @@ __pycache__
 env/
 venv/
 .venv
-README.md
+*.md
+images/
+.env
+*.pem
 .dockerignore
 Dockerfile
