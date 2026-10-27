@@ -1,4 +1,5 @@
 # Version: 1.0.1 - Built with GitHub Actions
+from datetime import datetime, timezone
 import os
 import re
 import csv
@@ -10,6 +11,33 @@ import tempfile
 
 app = Flask(__name__)
 CORS(app)
+# ---- Deployment info (Version 2.0 - Automated CI/CD) ----
+APP_VERSION = "2.0"
+DEPLOYED_VIA = "GitHub Actions + AWS SSM"
+STARTED_AT = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+
+@app.context_processor
+def inject_deploy_info():
+    """Makes these values available in every HTML template."""
+    return {
+        "app_version": APP_VERSION,
+        "deployed_via": DEPLOYED_VIA,
+        "started_at": STARTED_AT,
+    }
+
+
+@app.route("/health")
+def health():
+    return {
+        "status": "healthy",
+        "version": APP_VERSION,
+        "deployment_method": "automated",
+        "deployed_via": DEPLOYED_VIA,
+        "container_started": STARTED_AT,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
 
 # Global variables for playlist management
 current_directory = None
